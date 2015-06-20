@@ -11,6 +11,14 @@ var server = ws.createServer(function (conn) {
     conn.on("text", function (str) {
         console.log("Received "+str)
         //conn.sendText(str.toUpperCase()+"!!!")
+
+        /*
+
+			This is where you receive coordinates from the client.  Play with GPIO here all you want.
+
+        */
+
+
     })
     conn.on("close", function (code, reason) {
         console.log("Connection closed")
