@@ -63,22 +63,30 @@
 
         //mouse events
         canvas.addEventListener("mousedown", mouseDownListener, false);
+        canvas.addEventListener("touchstart", mouseDownListener, false);
 
         function mouseDownListener(evt) {
 
 
             //getting mouse position correctly, being mindful of resizing that may have occured in the browser:
             var bRect = canvas.getBoundingClientRect();
-            mouseX = (evt.clientX - bRect.left) * (canvas.width / bRect.width);
-            mouseY = (evt.clientY - bRect.top) * (canvas.height / bRect.height);
+
+            mouseX = evt.clientX || evt.touches[0].clientX;
+            mouseY = evt.clientY || evt.touches[0].clientY;
+
+            mouseX = (mouseX- bRect.left) * (canvas.width / bRect.width);
+            mouseY = (mouseY - bRect.top) * (canvas.height / bRect.height);
 
 
-            window.addEventListener("mousemove", mouseMoveListener, false);
 
             canvas.removeEventListener("mousedown", mouseDownListener, false);
+            canvas.removeEventListener("touchstart", mouseDownListener, false);
+
+            window.addEventListener("mousemove", mouseMoveListener, false);
+            window.addEventListener("touchmove", mouseMoveListener, false);
 
             window.addEventListener("mouseup", mouseUpListener, false);
-
+            window.addEventListener("touchend", mouseUpListener, false);
             outerCircle.x = innerCircle.x = mouseX;
             outerCircle.y = innerCircle.y = mouseY;
 
@@ -98,8 +106,13 @@
 
         function mouseUpListener(evt) {
             canvas.addEventListener("mousedown", mouseDownListener, false);
+            canvas.addEventListener("touchstart", mouseDownListener, false);
+
             window.removeEventListener("mouseup", mouseUpListener, false);
             window.removeEventListener("mousemove", mouseMoveListener, false);
+
+            window.removeEventListener("touchmove", mouseMoveListener, false);
+            window.removeEventListener("touchend", mouseUpListener, false);
 
             stage.removeChild(outerCircle);            
             stage.removeChild(innerCircle);
@@ -110,8 +123,12 @@
         function mouseMoveListener(evt) {
 
             var bRect = canvas.getBoundingClientRect();
-            mouseX = (evt.clientX - bRect.left) * (canvas.width / bRect.width);
-            mouseY = (evt.clientY - bRect.top) * (canvas.height / bRect.height);
+
+            mouseX = evt.clientX || evt.touches[0].clientX;
+            mouseY = evt.clientY || evt.touches[0].clientY;
+
+            mouseX = (mouseX- bRect.left) * (canvas.width / bRect.width);
+            mouseY = (mouseY - bRect.top) * (canvas.height / bRect.height);
 
             //get distance from initial click. thanks pythagoras you asshole
             var distanceX = mouseX - outerCircle.x;
@@ -163,7 +180,7 @@
 </head>
 
 <body onload="init();">
-    <canvas id="myCanvas" width="578" height="400"></canvas>
+    <canvas id="myCanvas" width="800" height="600"></canvas>
 
     <div id="debug"></div>
 </body>
